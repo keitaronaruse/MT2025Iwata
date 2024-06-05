@@ -47,13 +47,13 @@ int main( ) {
     for( const auto& v : xyz_plane ) {
         uvw_plane.push_back( T_xyz_uvw * v );
     }
-    std::cerr << uvw_plane << std::endl;
+    std::cout << uvw_plane << std::endl;
 
     std::vector< Eigen::Vector3d > xyz_plane_2;
     for( const auto& v : uvw_plane ) {
         xyz_plane_2.push_back( T_uvw_xyz * v );
     }
-    std::cerr << xyz_plane_2 << std::endl;
+    std::cout << xyz_plane_2 << std::endl;
 
     // const std::vector< Eigen::Vector3d > uvw_plane = {
     //     Eigen::Vector3d( 0.000, 1.200, 0.000 ), Eigen::Vector3d( 0.000, -1.200, 0.000 ),
