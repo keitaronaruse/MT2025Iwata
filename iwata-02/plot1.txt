@@ -1,0 +1,2 @@
+splot 'sample1.txt' u 1:2:3 w lp pt 6 lc -1
+pause -1

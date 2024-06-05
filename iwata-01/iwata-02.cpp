@@ -1,5 +1,5 @@
 /**
- * @file iwata-01.cpp
+ * @file iwata-02.cpp
  * @brief BFS (breadth first search) of a single point
  * @author Keitaro Naruse
  * @date 2024-05-30
@@ -17,15 +17,19 @@
 
 //  [ Umin, Umax ), [ Vmin, Vmax ), [ Qmin, Qmax )
 //  Parameters of workspace and cell size
+//  Zone 0, 1, 2
+//  Precise and slow
+const std::vector< std::tuple< double, double, double > > Urange = { { -3.737, -1.241, 0.002 } };
+const std::vector< std::tuple< double, double, double > > Vrange = { { -1.201, -1.201, 0.002 } };
+const std::vector< std::tuple< double, double, double > > Qrange = { { -180.75, -179.25, 1.5 } };
 
 //  Unprecise and fast
-const double Umin = -3.735, Umax = 0.005, dU = 0.010;
-const double Vmin = -1.205, Vmax = 0.005, dV = 0.010;
-const double Qmin = -181.5, Qmax = 178.5, dQ = 3.0;
-//  Precise and slow
-// const double Umin = -3.731, Umax = 0.001, dU = 0.002;
-// const double Vmin = -1.201, Vmax = 0.001, dV = 0.002;
-// const double Qmin = -180.75, Qmax = 179.25, dQ = 1.5;
+// const double Umin = -3.735, Umax = 0.005, dU = 0.010;
+// const double Vmin = -1.205, Vmax = 0.005, dV = 0.010;
+// const double Qmin = -181.5, Qmax = 178.5, dQ = 3.0;
+const double Umin = -3.737, Umax = -1.241, dU = 0.002;
+const double Vmin = -1.201, Vmax = 1.201, dV = 0.002;
+const double Qmin = -180.75, Qmax = 179.25, dQ = 1.5;
 
 //  Parameters of robot velocity
 const double V = 0.1;
@@ -134,7 +138,8 @@ int main( ) {
             }
         }
     }
-    // std::cout << "Arrived at goal int steps of " << cost.at( g_state.u ).at( g_state.v ).at( g_state.q ) << std::endl;
+    // std::cout << "Arrived at goal int steps of " << cost.at( g_state.u ).at( g_state.v ).at( g_state.q ) <<
+    // std::endl;
 
     //  Find a path of states
     std::vector< state > path_state;
