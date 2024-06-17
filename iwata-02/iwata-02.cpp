@@ -2,7 +2,7 @@
  * @file iwata-02.cpp
  * @brief Frame transformation
  * @author Keitaro Naruse
- * @date 2024-06-02
+ * @date 2024-06-16
  * @copyright MIT License
  * @details */
 
@@ -10,64 +10,76 @@
 #include <iomanip>
 #include <cmath>
 #include <vector>
+#include <cassert>
 #include <algorithm>
+
 #include "Eigen/Core"
-#include "Eigen/Dense"
 #include "Eigen/Geometry"
 
-std::ostream& operator<<( std::ostream& os, const std::vector< Eigen::Vector3d >& plane ) {
-    if( plane.empty( ) ) {
-        return os;
-    }
-    for( const auto& v : plane ) {
-        os << std::fixed << std::setprecision( 3 ) << v.x( ) << " " << v.y( ) << " " << v.z( ) << std::endl;
-    }
-    os << std::fixed << std::setprecision( 3 ) << plane.at( 0 ).x( ) << " " << plane.at( 0 ).y( ) << " "
-       << plane.at( 0 ).z( ) << std::endl;
+/**
+ * @fn deg2rad
+ * @brief convert from degree to radian
+ * @param (deg) degree
+ * @return radian
+ * @details requires M_PI in cmath
+ */
+double deg2rad( double deg ) { return deg / 180.0 * M_PI; }
+
+std::ostream& operator<<( std::ostream& os, const Eigen::Vector3d& p ) {
+    os << std::fixed << std::setprecision( 3 ) << "(" << p( 0 ) << "," << p( 1 ) << "," << p( 2 ) << ")";
+    return os;
+}
+
+std::ostream& operator<<( std::ostream& os, const Eigen::Matrix3d& m ) {
+    os << std::fixed << std::setprecision( 3 )
+        << "[ " << m( 0, 0 ) << " " << m( 0, 1 ) << " " << m( 0, 2 ) << std::endl
+        << "  " << m( 1, 0 ) << " " << m( 1, 1 ) << " " << m( 1, 2 ) << std::endl
+        << "  " << m( 2, 0 ) << " " << m( 2, 1 ) << " " << m( 2, 2 ) << " ]" << std::endl;
     return os;
 }
 
 int main( ) {
-    const std::vector< Eigen::Vector3d > xyz_plane = {
-        Eigen::Vector3d( 0.000, 1.200, 0.000 ), Eigen::Vector3d( 0.000, -1.200, 0.000 ),
-        Eigen::Vector3d( 1.200, -1.200, 0.322 ), Eigen::Vector3d( 1.200, 1.200, 0.322 ) };
-    std::cout << xyz_plane << std::endl;
+    //  Translation in uvw-frame
+    //  uvw座標系での並進変換
+    Eigen::Translation3d t_uvw( -1.242, 0.000, 0.000 );
+    // std::cerr << "t_uvw" << std::endl;
+    // std::cerr << t_uvw.translation( ) << std::endl << std::endl;
 
-    //  Frame transfromation from XYZ to UVW
-    const Eigen::Translation3d t_xyz_uvw( 0.000, 0.000, 0.000 );
-    const Eigen::Matrix3d R_xyz_uvw( Eigen::AngleAxisd( 15.0 / 180.0 * M_PI, Eigen::Vector3d::UnitY( ) ) );
-    const Eigen::Affine3d T_xyz_uvw = t_xyz_uvw * R_xyz_uvw;
-    // std::cerr << T_xyz_uvw.translation( ) << std::endl;
-    // std::cerr << T_xyz_uvw.rotation( ) << std::endl;
-    const Eigen::Translation3d t_uvw_xyz( 0.000, 0.000, 0.000 );
-    const Eigen::Matrix3d R_uvw_xyz( Eigen::AngleAxisd( -15.0 / 180.0 * M_PI, Eigen::Vector3d::UnitY( ) ) );
-    const Eigen::Affine3d T_uvw_xyz = R_uvw_xyz * t_uvw_xyz;
+    //  Rotation from uvw-fame to xyz-frame
+    //  uvw座標系からxyz座標系への回転変換
+    Eigen::Matrix3d R_uvw_xyz;
+    R_uvw_xyz = Eigen::AngleAxisd( deg2rad( 15.0 ), Eigen::Vector3d::UnitY( ) );
+    // std::cerr << "R_uvw_xyz" << std::endl;
+    // std::cerr << R_uvw_xyz << std::endl << std::endl;
 
-    std::vector< Eigen::Vector3d > uvw_plane;
-    for( const auto& v : xyz_plane ) {
-        uvw_plane.push_back( T_xyz_uvw * v );
+    //  Translation in xyz-frame
+    //  xyz座標系での並進変換
+    Eigen::Translation3d t_xyz( 1.200, 0.000, 0.000 );
+    // std::cerr << "t_xyz" << std::endl;
+    // std::cerr << t_xyz.translation( ) << std::endl << std::endl;
+
+    //  Affine transform from uvw-frame to xyz-frame
+    //  uvw座標系からxyz座標系へのアフィン変換
+    Eigen::Affine3d A_uvw_xyz;
+    A_uvw_xyz = t_xyz * R_uvw_xyz * t_uvw;
+    // std::cerr << "A_uvw_xyz translation" << std::endl;
+    // std::cerr << A_uvw_xyz.translation( ) << std::endl << std::endl;
+    // std::cerr << "A_uvw_xyz rotations" << std::endl;
+    // std::cerr << A_uvw_xyz.rotation( ) << std::endl << std::endl;
+
+    const std::vector< Eigen::Vector3d > P_uvw = {
+        Eigen::Vector3d( 0.621, -1.200, 0.000 ), Eigen::Vector3d( 0.621, 1.200, 0.000 ),
+        Eigen::Vector3d( 1.242, 1.200, 0.000 ), Eigen::Vector3d( 1.242, -1.200, 0.000 ) };
+    for( const auto& p_uvw : P_uvw ) {
+        std::cerr << "uvw: " << p_uvw << ", " << "xyz: " << A_uvw_xyz * p_uvw << std::endl;
     }
-    std::cout << uvw_plane << std::endl;
-
-    std::vector< Eigen::Vector3d > xyz_plane_2;
-    for( const auto& v : uvw_plane ) {
-        xyz_plane_2.push_back( T_uvw_xyz * v );
-    }
-    std::cout << xyz_plane_2 << std::endl;
-
-    // const std::vector< Eigen::Vector3d > uvw_plane = {
-    //     Eigen::Vector3d( 0.000, 1.200, 0.000 ), Eigen::Vector3d( 0.000, -1.200, 0.000 ),
-    //     Eigen::Vector3d( 1.242, -1.200, 0.000 ), Eigen::Vector3d( 1.242, 1.200, 0.000 ) };
-    // std::cout << uvw_plane << std::endl;
-
-    // Eigen::Translation3d trans( 0.000, 0.000, 0.000 );
-    // Eigen::Matrix3d rot( Eigen::AngleAxisd( -15.0 / 180.0 * M_PI, Eigen::Vector3d::UnitY( ) ) );
-
-    // std::vector< Eigen::Vector3d > xyz_plane;
-    // for( const auto& v : uvw_plane ) {
-    //     xyz_plane.push_back( affine * v );
-    // }
-    // std::cout << xyz_plane << std::endl;
-
+    const std::vector< Eigen::Matrix3d > R_uvw = {
+        Eigen::AngleAxisd( deg2rad( -90.0 ), Eigen::Vector3d::UnitZ( ) ).toRotationMatrix( ),
+        Eigen::AngleAxisd( deg2rad( 0.0 ), Eigen::Vector3d::UnitZ( ) ).toRotationMatrix( ),
+        Eigen::AngleAxisd( deg2rad( 90.0 ), Eigen::Vector3d::UnitZ( ) ).toRotationMatrix( ),
+        Eigen::AngleAxisd( deg2rad( -180.0 ), Eigen::Vector3d::UnitZ( ) ).toRotationMatrix( ) };
+    for( const auto& r_uvw : R_uvw ) {
+        std::cerr << r_uvw << std::endl;
+    };
     return 0;
 }
