@@ -19,22 +19,39 @@
 /**
  * @fn deg2rad
  * @brief convert from degree to radian
- * @param (deg) degree
- * @return radian
+ * @param [in] deg an angle by degree
+ * @return radian an angle by radian
  * @details requires M_PI in cmath
  */
 double deg2rad( double deg ) { return deg / 180.0 * M_PI; }
 
+/**
+ * @fn operator<<
+ * @brief output a 3D-vector to a given output stream
+ * @param [in] os output stream
+ * @param [in] p Eigen::Vector3d object
+ * @return os output stream
+ * @details output is formatted
+ */
 std::ostream &operator<<( std::ostream &os, const Eigen::Vector3d &p ) {
-    os << std::fixed << std::showpos  << std::setprecision( 3 ) << "( " << p( 0 ) << ", " << p( 1 ) << ", " << p( 2 ) << " )";
+    os << std::fixed << std::showpos << std::setprecision( 3 ) << "( " << p( 0 ) << ", " << p( 1 ) << ", " << p( 2 )
+       << " )";
     return os;
 }
 
+/**
+ * @fn operator<<
+ * @brief output a 3*3 matrix to a given output stream
+ * @param [in] os output stream
+ * @param [in] m Eigen::Matrix3d object
+ * @return os output stream
+ * @details output is formatted
+ */
 std::ostream &operator<<( std::ostream &os, const Eigen::Matrix3d &m ) {
-    os << std::fixed << std::showpos << std::setprecision( 3 ) 
-        << "[ "  << m( 0, 0 ) << " "  << m( 0, 1 ) << " "  << m( 0, 2 ) << std::endl
-        << "  "  << m( 1, 0 ) << " "  << m( 1, 1 ) << " "  << m( 1, 2 ) << std::endl
-        << "  "  << m( 2, 0 ) << " "  << m( 2, 1 ) << " "  << m( 2, 2 ) << " ]" << std::endl;
+    os << std::fixed << std::showpos << std::setprecision( 3 ) << "[ " << m( 0, 0 ) << " " << m( 0, 1 ) << " "
+       << m( 0, 2 ) << std::endl
+       << "  " << m( 1, 0 ) << " " << m( 1, 1 ) << " " << m( 1, 2 ) << std::endl
+       << "  " << m( 2, 0 ) << " " << m( 2, 1 ) << " " << m( 2, 2 ) << " ]" << std::endl;
     return os;
 }
 
@@ -59,7 +76,7 @@ int main( ) {
     // std::cerr << t_xyz.translation( ) << std::endl << std::endl;
 
     //  Affine transform from uvw-frame to xyz-frame
-    //  translation in uvw-frame -> rotation from uvw-frame to xyz-frame -> translation in xyz-frame 
+    //  translation in uvw-frame -> rotation from uvw-frame to xyz-frame -> translation in xyz-frame
     //  uvw座標系からxyz座標系へのアフィン変換
     //  uvw座標系で並進変換 -> uvw座標系からxyz座標系へ回転変換 -> xyz座標系で並進変換
     Eigen::Affine3d A_uvw_xyz;
