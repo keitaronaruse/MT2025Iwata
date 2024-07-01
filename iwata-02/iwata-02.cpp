@@ -4,7 +4,8 @@
  * @author Keitaro Naruse
  * @date 2024-06-16
  * @copyright MIT License
- * @details */
+ * @details
+ */
 
 #include <iostream>
 #include <iomanip>
@@ -23,7 +24,9 @@
  * @return radian an angle by radian
  * @details requires M_PI in cmath
  */
-double deg2rad( double deg ) { return deg / 180.0 * M_PI; }
+double deg2rad( double deg ) {
+    return deg / 180.0 * M_PI;
+}
 
 /**
  * @fn operator<<
