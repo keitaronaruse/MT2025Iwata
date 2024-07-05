@@ -28,17 +28,17 @@ double deg2rad( double deg ) { return M_PI * deg / 180.0; }
 //  INF for time
 const double INF = 1e6;
 
-//  Data Set 1
-//  Range of u-position [ u_min, u_max )
-const double d_u = 0.005, u_min = 1.800 - d_u / 2.0, u_max = 2.400 + d_u / 2.0;
-//  Range of v-position [ v_min, v_max )
-const double d_v = 0.005, v_min = -1.200 - d_v / 2.0, v_max = 1.200 + d_v / 2.0;
-//  Range of angle [ q_min, q_max )
-const double d_q = M_PI / 60.0, q_min = 0.0 - d_q / 2.0, q_max = 2.0 * M_PI - d_q / 2.0;
-//  Start position and angle
-const double u_start = 1.800, v_start = 0.000, q_start = deg2rad( 270.0 );
-//  Goal position and angle
-const double u_goal = 2.400, v_goal = -0.600, q_goal = deg2rad( 0.0 );
+// //  Data Set 1
+// //  Range of u-position [ u_min, u_max )
+// const double d_u = 0.005, u_min = 1.800 - d_u / 2.0, u_max = 2.400 + d_u / 2.0;
+// //  Range of v-position [ v_min, v_max )
+// const double d_v = 0.005, v_min = -1.200 - d_v / 2.0, v_max = 1.200 + d_v / 2.0;
+// //  Range of angle [ q_min, q_max )
+// const double d_q = M_PI / 60.0, q_min = 0.0 - d_q / 2.0, q_max = 2.0 * M_PI - d_q / 2.0;
+// //  Start position and angle
+// const double u_start = 1.800, v_start = 0.000, q_start = deg2rad( 270.0 );
+// //  Goal position and angle
+// const double u_goal = 2.400, v_goal = -0.600, q_goal = deg2rad( 0.0 );
 
 // //  Data Set 2
 // //  Range of u-position [ u_min, u_max )
@@ -84,7 +84,7 @@ const double u_goal = 2.400, v_goal = -0.600, q_goal = deg2rad( 0.0 );
 // //  Range of angle [ q_min, q_max )
 // const double d_q = M_PI / 60.0, q_min = 0.0 - d_q / 2.0, q_max = 2.0 * M_PI - d_q / 2.0;
 // //  Start position and angle
-// const double u_start = 5.400, v_start = 0.600, q_start = deg2rad( 270.0 );
+// const double u_start = 5.400, v_start = 0.000, q_start = deg2rad( 270.0 );
 // //  Goal position and angle
 // const double u_goal = 4.800, v_goal = -0.600, q_goal = deg2rad( 180.0 );
 
@@ -112,17 +112,17 @@ const double u_goal = 2.400, v_goal = -0.600, q_goal = deg2rad( 0.0 );
 // //  Goal position and angle
 // const double u_goal = 2.400, v_goal = 0.600, q_goal = deg2rad( 180.0 );
 
-// //  Data Set 8
-// //  Range of u-position [ u_min, u_max )
-// const double d_u = 0.005, u_min = 1.800 - d_u / 2.0, u_max = 2.400 + d_u / 2.0;
-// //  Range of v-position [ v_min, v_max )
-// const double d_v = 0.005, v_min = -1.200 - d_v / 2.0, v_max = 1.200 + d_v / 2.0;
-// //  Range of angle [ q_min, q_max )
-// const double d_q = M_PI / 60.0, q_min = 0.0 - d_q / 2.0, q_max = 2.0 * M_PI - d_q / 2.0;
-// //  Start position and angle
-// const double u_start = 2.400, v_start = 0.000, q_start = deg2rad( 180.0 );
-// //  Goal position and angle
-// const double u_goal = 1.800, v_goal = 0.000, q_goal = deg2rad( 270.0 );
+//  Data Set 8
+//  Range of u-position [ u_min, u_max )
+const double d_u = 0.005, u_min = 1.800 - d_u / 2.0, u_max = 2.400 + d_u / 2.0;
+//  Range of v-position [ v_min, v_max )
+const double d_v = 0.005, v_min = -1.200 - d_v / 2.0, v_max = 1.200 + d_v / 2.0;
+//  Range of angle [ q_min, q_max )
+const double d_q = M_PI / 60.0, q_min = 0.0 - d_q / 2.0, q_max = 2.0 * M_PI - d_q / 2.0;
+//  Start position and angle
+const double u_start = 2.400, v_start = 0.600, q_start = deg2rad( 180.0 );
+//  Goal position and angle
+const double u_goal = 1.800, v_goal = 0.000, q_goal = deg2rad( 270.0 );
 
 /**
  * @fn operator<<
@@ -302,11 +302,11 @@ int main( ) {
     std::reverse( path_state.begin( ), path_state.end( ) );
 
     //  Outout a path as ( u, v, du, dv )
+    //  Outout a path as ( u, v, q, V )
     for( const auto& s : path_state ) {
         auto [ u_id_curr, v_id_curr, q_id_curr ] = s;
         double u = u_val( u_id_curr ), v = v_val( v_id_curr ), q = q_val( q_id_curr );
-        std::cout << std::fixed << std::setprecision( 3 ) << u << " " << v << " " << V * std::cos( q ) << " "
-                  << V * std::sin( q ) << std::endl;
+        std::cout << std::fixed << std::setprecision( 3 ) << u << " " << v << " " << q << " " << V << std::endl;
     }
 
     return 0;
